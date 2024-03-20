@@ -1,28 +1,49 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import Customer from './components/Customer';
-import { Paper, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
+import { Paper, Table, TableHead, TableBody, TableRow, TableCell, CircularProgress } from '@mui/material';
+import { styled } from "@mui/material/styles";
+
+const styles = (theme) => ({
+  root: {
+    width: "100%",
+    marginTop: (value) => value * 3,
+    overflowX: "auto",
+  },
+  table: {
+    minWidth: 1080,
+  },
+  progress: {
+    margin: (value) => value * 2,
+  },
+});
+
 
 function App() {
 
   let [customers, setCustomers] = useState("");
+  let [completed, setCompleted] = useState(0);
+  let [timer, setTimer] = useState(0);
 
   const fetchData = async () => {
-    await fetch('/api/customers')
-      .then(res=>res.json())
-      .then(result=> {
-        setCustomers(result);
-      });
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
   };
 
-  useEffect( ()=> {
-    fetchData();
-  }, []);
+  const progress = () => {
+    setCompleted(completed >= 100 ? 0 : completed+1)
+  }
+  useEffect(() => {
+    const interval = setInterval(progress, 20);
+    //return () => clearInterval(interval);
 
+    fetchData().then(res => setCustomers(res)).catch(err => console.log(err));
+  }, [completed]);
   
   return (
-    <Paper>
-      <Table>
+    <Paper className={styles.root}>
+      <Table className={styles.table}>
         <TableHead>
           <TableRow>
             <TableCell>번호</TableCell>
@@ -34,7 +55,7 @@ function App() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {customers && 
+          {customers ? (
             customers.map((customer) => (
               <Customer
                 key={customer.id}
@@ -45,11 +66,22 @@ function App() {
                 gender={customer.gender}
                 job={customer.job}
               />
-          ))}
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan="6" align="center">
+                <CircularProgress
+                  className={styles.progress}
+                  variant="indeterminate"
+                  value={completed}
+                />
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </Paper>
   );
 }
 
-export default App;
+export default styled(App)(styles);
