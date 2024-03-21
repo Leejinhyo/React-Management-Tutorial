@@ -4,6 +4,7 @@ import Customer from './components/Customer';
 import { Paper, Table, TableHead, TableBody, TableRow, TableCell, CircularProgress } from '@mui/material';
 import { styled } from "@mui/material/styles";
 import CustomerAdd from './components/CustomerAdd';
+import CustomerDelete from './components/CustomerDelete';
 
 const styles = (theme) => ({
   root: {
@@ -65,6 +66,7 @@ function App() {
               <TableCell>생년월일</TableCell>
               <TableCell>성별</TableCell>
               <TableCell>직업</TableCell>
+              <TableCell>삭제</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -78,6 +80,7 @@ function App() {
                   birthday={customer.birthday}
                   gender={customer.gender}
                   job={customer.job}
+                  stateRefresh={stateRefresh}
                 />
               ))
             ) : (
