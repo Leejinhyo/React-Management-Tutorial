@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import './App.css';
 import Customer from './components/Customer';
@@ -6,19 +7,19 @@ import { styled } from "@mui/material/styles";
 import CustomerAdd from './components/CustomerAdd';
 import CustomerDelete from './components/CustomerDelete';
 
-const styles = (theme) => ({
-  root: {
-    width: "100%",
-    marginTop: (value) => value * 3,
-    overflowX: "auto",
-  },
-  table: {
-    minWidth: 1080,
-  },
-  progress: {
-    margin: (value) => value * 2,
-  },
-});
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  width: "100%",
+  marginTop: theme.spacing(3),
+  overflowX: "auto",
+}));
+
+const StyledTable = styled(Table)(({ theme }) => ({
+  minWidth: 1080
+}));
+
+const StyledProgress = styled(CircularProgress)(({ theme }) => ({
+  margin: theme.spacing(2),
+}));
 
 
 function App() {
@@ -54,10 +55,11 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
+
   return (
     <div>
-      <Paper className={styles.root}>
-        <Table className={styles.table}>
+      <StyledPaper>
+        <StyledTable>
           <TableHead>
             <TableRow>
               <TableCell>번호</TableCell>
@@ -86,8 +88,7 @@ function App() {
             ) : (
               <TableRow>
                 <TableCell colSpan="6" align="center">
-                  <CircularProgress
-                    className={styles.progress}
+                  <StyledProgress
                     variant="indeterminate"
                     value={completed}
                   />
@@ -95,11 +96,11 @@ function App() {
               </TableRow>
             )}
           </TableBody>
-        </Table>
-      </Paper>
+        </StyledTable>
+      </StyledPaper>
       <CustomerAdd stateRefresh={stateRefresh} />
     </div>
   );
 }
 
-export default styled(App)(styles);
+export default App;
